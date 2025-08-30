@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumelo Innovation - Software That Breaks Boundaries</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --accent-green: #00ff88;
+            --accent-pink: #ff0080;
+            --accent-yellow: #ffff00;
+            --accent-blue: #0080ff;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+        }
+
+        body {
+            font-family: 'Space Grotesk', monospace;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor.hover {
+            transform: scale(3);
+            background: var(--accent-pink);
+        }
+
+        /* Noise Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.03) 2px,
+                    rgba(255, 255, 255, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '_';
+            animation: blink 1s infinite;
+            color: var(--accent-pink);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            border: 2px solid var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            width: 30px;
+            height: 20px;
+            justify-content: space-between;
+        }
+
+        .mobile-toggle span {
+            width: 100%;
+            height: 2px;
+            background: var(--accent-green);
+            transition: 0.3s;
+        }
+
+        /* Page Sections */
+        .page {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(0, 255, 136, 0.1) 50%, transparent 70%),
+                linear-gradient(-45deg, transparent 30%, rgba(255, 0, 128, 0.1) 50%, transparent 70%);
+            animation: heroRotate 20s linear infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            animation: glitch 3s ease-in-out infinite;
+        }
+
+        .hero-title .word:nth-child(1) { color: var(--text-primary); animation-delay: 0s; }
+        .hero-title .word:nth-child(2) { color: var(--accent-green); animation-delay: 0.5s; }
+        .hero-title .word:nth-child(3) { color: var(--accent-pink); animation-delay: 1s; }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn:hover {
+            background: var(--accent-green);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+        }
+
+        .cta-btn.secondary {
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .cta-btn.secondary:hover {
+            background: var(--accent-pink);
+        }
+
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--secondary-bg);
+            border: 2px solid var(--border-color);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-10px);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-green);
+        }
+
+        .service-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .service-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-list {
+            list-style: none;
+        }
+
+        .service-list li {
+            color: var(--text-secondary);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .service-list li::before {
+            content: '> ';
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        /* About Page */
+        .about-hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(3rem, 6vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            color: var(--accent-pink);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 4rem;
+            padding: 0 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            background: var(--secondary-bg);
+            padding: 3rem;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .about-section h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .about-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Contact Page */
+        .contact-hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(3rem, 6vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            color: var(--accent-blue);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .contact-form {
+            background: var(--secondary-bg);
+            padding: 3rem;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--primary-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem;
+            font-family: 'Space Grotesk', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .submit-btn {
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 1rem 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-green);
+            color: var(--primary-bg);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-item {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border: 2px solid var(--border-color);
+            border-left: 4px solid var(--accent-pink);
+        }
+
+        .contact-item h4 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-pink);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .contact-item p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-item a {
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-item a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        @keyframes heroRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Terminal Effect */
+        .terminal {
+            background: var(--primary-bg);
+            border: 2px solid var(--accent-green);
+            padding: 2rem;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-header {
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .terminal-line {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-line::before {
+            content: '$ ';
+            color: var(--accent-green);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--primary-bg);
+                flex-direction: column;
+                padding: 2rem;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                padding: 2rem 1rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1rem 2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                padding: 0 1rem 2rem;
+            }
+
+            .custom-cursor {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">tumelo</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('services')">Services</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+            <div class="mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="word">CODE</span><br>
+                    <span class="word">CREATE</span><br>
+                    <span class="word">CONQUER</span>
+                </h1>
+                <p class="hero-subtitle">
+                    We build software that doesn't just work—it dominates. Mobile, web, AI, enterprise. 
+                    Every platform. Every possibility. Zero compromises.
+                </p>
+                <div class="cta-container">
+                    <a href="#" class="cta-btn" onclick="showPage('contact')">Start Project</a>
+                    <a href="#" class="cta-btn secondary" onclick="showPage('services')">Explore Services</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <h3 class="service-title">Mobile Domination</h3>
+                <p class="service-desc">Native iOS/Android apps that crush the competition. Cross-platform solutions that work everywhere.</p>
+                <ul class="service-list">
+                    <li>React Native & Flutter</li>
+                    <li>SwiftUI & Kotlin</li>
+                    <li>PWA Development</li>
+                    <li>App Store Optimization</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">⚡</div>
+                <h3 class="service-title">Web Warfare</h3>
+                <p class="service-desc">Lightning-fast websites and web apps that load in milliseconds and convert like crazy.</p>
+                <ul class="service-list">
+                    <li>Next.js & React</li>
+                    <li>E-commerce Platforms</li>
+                    <li>JAMstack Architecture</li>
+                    <li>Web Performance</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <h3 class="service-title">AI Integration</h3>
+                <p class="service-desc">Machine learning models that actually work. AI solutions that solve real problems.</p>
+                <ul class="service-list">
+                    <li>Custom ML Models</li>
+                    <li>Computer Vision</li>
+                    <li>NLP & Chatbots</li>
+                    <li>Predictive Analytics</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🏢</div>
+                <h3 class="service-title">Enterprise Arsenal</h3>
+                <p class="service-desc">Scalable systems that handle millions of users without breaking a sweat.</p>
+                <ul class="service-list">
+                    <li>Microservices Architecture</li>
+                    <li>CRM & ERP Systems</li>
+                    <li>Business Automation</li>
+                    <li>Data Analytics</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">☁️</div>
+                <h3 class="service-title">Cloud Mastery</h3>
+                <p class="service-desc">Infrastructure that scales infinitely. DevOps that deploys in seconds, not hours.</p>
+                <ul class="service-list">
+                    <li>AWS & Azure</li>
+                    <li>Kubernetes & Docker</li>
+                    <li>CI/CD Pipelines</li>
+                    <li>Cloud Security</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🎯</div>
+                <h3 class="service-title">Strategy & Consulting</h3>
+                <p class="service-desc">We don't just build software. We architect digital empires.</p>
+                <ul class="service-list">
+                    <li>Tech Strategy</li>
+                    <li>Digital Transformation</li>
+                    <li>Architecture Design</li>
+                    <li>Performance Audits</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Services Page -->
+    <div id="services" class="page">
+        <div class="about-hero">
+            <h1 class="about-title">Services</h1>
+            <p>Everything you need to dominate the digital landscape</p>
+        </div>
+        
+        <div class="terminal" style="max-width: 1200px; margin: 0 auto;">
+            <div class="terminal-header">tumelo@innovation:~$ cat services.txt</div>
+            <div class="terminal-line">Mobile development that doesn't suck</div>
+            <div class="terminal-line">Web apps faster than your competition</div>
+            <div class="terminal-line">AI that actually works</div>
+            <div class="terminal-line">Enterprise systems that scale</div>
+            <div class="terminal-line">Cloud infrastructure done right</div>
+            <div class="terminal-line">Strategy that wins</div>
+        </div>
+
+        <section class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">📱</div>
+                <h3 class="service-title">Mobile Apps</h3>
+                <p class="service-desc">We build mobile apps that users actually love. No compromises on performance, design, or functionality.</p>
+                <ul class="service-list">
+                    <li>iOS & Android Native</li>
+                    <li>React Native</li>
+                    <li>Flutter</li>
+                    <li>UI/UX Design</li>
+                    <li>App Store Launch</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🌐</div>
+                <h3 class="service-title">Web Development</h3>
+                <p class="service-desc">Websites and web apps that load instantly and convert visitors into customers.</p>
+                <ul class="service-list">
+                    <li>Custom Web Apps</li>
+                    <li>E-commerce</li>
+                    <li>Landing Pages</li>
+                    <li>APIs & Backends</li>
+                    <li>Performance Optimization</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🧠</div>
+                <h3 class="service-title">AI & Machine Learning</h3>
+                <p class="service-desc">AI solutions that solve real business problems, not just tech demos.</p>
+                <ul class="service-list">
+                    <li>Custom AI Models</li>
+                    <li>Chatbots & Assistants</li>
+                    <li>Computer Vision</li>
+                    <li>Data Analysis</li>
+                    <li>Automation</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🏭</div>
+                <h3 class="service-title">Enterprise Software</h3>
+                <p class="service-desc">Systems that handle your business growth without breaking down.</p>
+                <ul class="service-list">
+                    <li>CRM Systems</li>
+                    <li>ERP Solutions</li>
+                    <li>Business Intelligence</li>
+                    <li>Workflow Automation</li>
+                    <li>Integration Services</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="about-hero">
+            <h1 class="about-title">About Us</h1>
+            <p>We're not your typical software company</p>
+        </div>
+        
+        <div class="about-content">
+            <div class="about-section">
+                <h3>Our Mission</h3>
+                <p>We exist to build software that actually matters. No fluff, no buzzwords, no corporate BS. Just powerful, efficient software that solves real problems and drives real results.</p>
+                <p>Every line of code we write has a purpose. Every interface we design serves the user. Every system we architect scales with your ambitions.</p>
+            </div>
+
+            <div class="about-section">
+                <h3>How We Work</h3>
+                <p>We don't do committees or endless meetings. We do fast iterations, direct communication, and results that speak louder than presentations.</p>
+                <p>Our process is simple: understand your problem, architect the solution, build it right the first time, and deliver it on schedule.</p>
+            </div>
+
+            <div class="about-section">
+                <h3>Why Choose Us</h3>
+                <p>Because we're obsessed with building software that works. Not just "good enough" software, but software that exceeds expectations and delivers measurable business value.</p>
+                <p>We've seen too many projects fail because of poor planning, bad architecture, or misaligned priorities. We don't let that happen.</p>
+            </div>
+
+            <div class="about-section">
+                <h3>Our Values</h3>
+                <p><strong>Performance First:</strong> If it's slow, it's broken.</p>
+                <p><strong>User-Centric:</strong> Technology serves humans, not the other way around.</p>
+                <p><strong>Quality Code:</strong> Clean, maintainable, documented code is non-negotiable.</p>
+                <p><strong>Honest Communication:</strong> We tell you what you need to hear, not what you want to hear.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <div class="contact-hero">
+            <h1 class="contact-title">Let's Build</h1>
+            <p>Ready to create something extraordinary?</p>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-form">
+                <h3 style="color: var(--accent-green); font-family: 'JetBrains Mono', monospace; margin-bottom: 2rem; text-transform: uppercase;">Start Your Project</h3>
+                <form onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="project">Project Type</label>
+                        <select id="project" name="project">
+                            <option value="">Select Service</option>
+                            <option value="mobile">Mobile App</option>
+                            <option value="web">Web Development</option>
+                            <option value="ai">AI/ML Integration</option>
+                            <option value="enterprise">Enterprise Software</option>
+                            <option value="cloud">Cloud Solutions</option>
+                            <option value="consulting">Strategy & Consulting</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Project Budget</label>
+                        <select id="budget" name="budget">
+                            <option value="">Select Budget Range</option>
+                            <option value="5k-15k">$5K - $15K</option>
+                            <option value="15k-50k">$15K - $50K</option>
+                            <option value="50k-100k">$50K - $100K</option>
+                            <option value="100k+">$100K+</option>
+                            <option value="discuss">Let's Discuss</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Project Details</label>
+                        <textarea id="message" name="message" rows="6" placeholder="Tell us about your project. What problem are you solving? What's your timeline? Any specific requirements?" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h4>Email</h4>
+                    <p><a href="mailto:tumelo.innovation@gmail.com">tumelo.innovation@gmail.com</a></p>
+                    <p>We respond within 24 hours</p>
+                </div>
+                
+                <div class="contact-item">
+                    <h4>Phone</h4>
+                    <p><a href="tel:0753019548">0753019548</a></p>
+                    <p>Available during business hours</p>
+                </div>
+                
+                <div class="contact-item">
+                    <h4>Location</h4>
+                    <p>21 Chuka</p>
+                    <p>Remote-first, global reach</p>
+                </div>
+                
+                <div class="contact-item" style="border-left-color: var(--accent-yellow);">
+                    <h4>Business Hours</h4>
+                    <p><strong>Mon-Fri:</strong> 8:00 AM - 6:00 PM</p>
+                    <p><strong>Sat:</strong> 9:00 AM - 4:00 PM</p>
+                    <p><strong>Sun:</strong> By appointment</p>
+                </div>
+                
+                <div class="terminal">
+                    <div class="terminal-header">tumelo@innovation:~$ status</div>
+                    <div class="terminal-line">Available for new projects</div>
+                    <div class="terminal-line">Response time: &lt; 24 hours</div>
+                    <div class="terminal-line">Free consultation: 30 minutes</div>
+                    <div class="terminal-line">Coffee meetings: Always welcome</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button, .service-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Navigation functionality
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('navLinks').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const phone = formData.get('phone') || 'Not provided';
+            const project = formData.get('project') || 'Not specified';
+            const budget = formData.get('budget') || 'Not specified';
+            const message = formData.get('message');
+            
+            const subject = `New Project Inquiry - ${project}`;
+            const body = `Hello Tumelo Innovation,
+
+${name} here, reaching out about a potential project.
+
+CONTACT INFO:
+- Email: ${email}
+- Phone: ${phone}
+
+PROJECT DETAILS:
+- Type: ${project}
+- Budget: ${budget}
+
+PROJECT DESCRIPTION:
+${message}
+
+Looking forward to discussing this further.
+
+Best regards,
+${name}`;
+            
+            const mailtoLink = `mailto:tumelo.innovation@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+            
+            // Show success message
+            alert('Thanks for reaching out! Your email client will open with your message ready to send.');
+        }
+
+        // Glitch text effect
+        function glitchText() {
+            const words = document.querySelectorAll('.hero-title .word');
+            words.forEach((word, index) => {
+                setTimeout(() => {
+                    word.style.transform = `translateX(${Math.random() * 4 - 2}px)`;
+                    setTimeout(() => {
+                        word.style.transform = 'translateX(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        }
+
+        // Trigger glitch effect every 5 seconds
+        setInterval(glitchText, 5000);
+
+        // Service card animations
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-green');
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border-color');
+            });
+        });
+
+        // Terminal typing effect
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            const originalText = element.textContent;
+            element.textContent = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Add some random glitch effects
+        function randomGlitch() {
+            const elements = document.querySelectorAll('.service-title, .about-title, .contact-title');
+            const randomEl = elements[Math.floor(Math.random() * elements.length)];
+            
+            if (randomEl) {
+                randomEl.style.textShadow = '2px 0 #ff0080, -2px 0 #00ff88';
+                setTimeout(() => {
+                    randomEl.style.textShadow = 'none';
+                }, 200);
+            }
+        }
+
+        // Trigger random glitch every 10-30 seconds
+        setInterval(randomGlitch, Math.random() * 20000 + 10000);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const nav = document.querySelector('nav');
+            const navLinks = document.getElementById('navLinks');
+            
+            if (!nav.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Add scroll effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-bg');
+            
+            if (parallax) {
+                parallax.style.transform = `rotate(${scrolled * 0.1}deg)`;
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add some initial animations
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Konami code easter egg
+        let konamiCode = [];
+        const sequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑ ↑ ↓ ↓ ← → ← → B A
+
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > sequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === sequence.join(',')) {
+                document.body.style.animation = 'glitch 0.5s ease-in-out';
+                setTimeout(() => {
+                    document.body.style.animation = 'none';
+                }, 500);
+                
+                // Show secret message
+                alert('🚀 CHEAT CODE ACTIVATED! You found the secret developer mode!');
+                konamiCode = [];
+            }
+        });
+    </script>
+</body>
+</html>
